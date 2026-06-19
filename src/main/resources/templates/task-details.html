@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10"> 
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Task Details</h1> 
+ 
+    <div class="space-y-2 mb-8"> 
+        <h2 class="text-xl font-semibold text-gray-800" th:text="${task.title}">Task Title</h2> 
+        <p><span class="font-medium text-gray-700">Description:</span> <span 
+th:text="${task.description}"></span></p> 
+        <p><span class="font-medium text-gray-700">Status:</span> <span th:text="${task.status}"></span></p> 
+        <p><span class="font-medium text-gray-700">Priority:</span> <span th:text="${task.priority}"></span></p> 
+        <p><span class="font-medium text-gray-700">Due Date:</span> <span th:text="${task.dueDate}"></span></p> 
+        <p><span class="font-medium text-gray-700">Assigned To:</span> 
+        <span th:text="${task.assignedTo != null ? task.assignedTo.name : 'N/A'}">
+    User
+</span> 
+    </div> 
+ 
+    <div class="border-t pt-6 mt-6"> 
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Comments</h3> 
+ 
+        <!--    Updated comment form --> 
+        <form th:action="@{/tasks/add-comment}" method="post" class="space-y-4 mb-6"> 
+            <input type="hidden" name="taskId" th:value="${task.id}" /> 
+            <textarea name="content" placeholder="Write a comment..." rows="4" 
+                      class="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:ring-blue
+200" 
+                      required></textarea> 
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"> 
+                Add Comment 
+            </button> 
+        </form> 
+ 
+        <div th:if="${#lists.isEmpty(comments)}" class="text-gray-500 italic"> 
+            No comments yet. 
+        </div> 
+ 
+        <ul th:if="${!#lists.isEmpty(comments)}" class="space-y-4"> 
+            <li th:each="comment : ${comments}" class="border-t pt-4"> 
+                <p class="text-sm text-gray-700"> 
+                    <strong class="text-blue-600"
+        th:text="${comment.author != null ? comment.author.name : 'Unknown User'}">
+    Author
+</strong>  
+                    <em th:text="${#temporals.format(comment.timestamp, 'yyyy-MM-dd HH:mm')}">Time</em> 
+                </p> 
+                <p class="text-gray-800 mt-1" th:text="${comment.content}">Comment content</p> 
+            </li> 
+        </ul> 
+    </div> 
+ 
+    <div class="mt-6 flex justify-between"> 
+        <a href="/dashboard"
+   class="text-blue-500 hover:underline">
+    ← Back to Dashboard
+</a>
+    </div> 
+</div> 
+</body>
+</html>

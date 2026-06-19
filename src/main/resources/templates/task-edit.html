@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold text-blue-600 mb-6 text-center">Edit Task</h1>
+    <form th:action="@{'/tasks/update/' + ${task.id}}" method="post" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Title</label>
+            <input type="text" name="title" th:value="${task.title}" required
+                   class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Description</label>
+            <input type="text" name="description" th:value="${task.description}" required
+                   class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Due Date</label>
+            <input type="date" name="dueDate" th:value="${task.dueDate}" required
+                   class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Status</label>
+            <select name="status" class="w-full border border-gray-300 p-2 rounded text-sm">
+                <option th:selected="${task.status == 'To Do'}">To Do</option>
+                <option th:selected="${task.status == 'In Progress'}">In Progress</option>
+                <option th:selected="${task.status == 'Completed'}">Completed</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Priority</label>
+            <select name="priority" class="w-full border border-gray-300 p-2 rounded text-sm">
+                <option th:selected="${task.priority == 'Low'}">Low</option>
+                <option th:selected="${task.priority == 'Medium'}">Medium</option>
+                <option th:selected="${task.priority == 'High'}">High</option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

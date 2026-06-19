@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TaskFlow Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-8">
+
+<div class="bg-white shadow-lg rounded-lg p-10 w-full max-w-xl text-center">
+
+    <h1 class="text-4xl font-bold text-blue-600 mb-4">
+        TaskFlow Hub
+    </h1>
+
+    <p class="text-gray-700 mb-8">
+        Organize, track, and accomplish your goals with ease.
+    </p>
+
+    <div class="flex justify-center gap-4 mb-6">
+
+        <a th:href="@{/register}"
+           class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition">
+            Register
+        </a>
+
+        <a th:href="@{/login}"
+           class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition">
+            Login
+        </a>
+
+    </div>
+
+    <div class="text-gray-600 text-sm">
+        <p>
+            New user?
+            <a th:href="@{/register}" class="text-green-600 font-medium hover:underline">
+                Register
+            </a>
+        </p>
+
+        <p class="mt-2">
+            Existing user? 
+            <a th:href="@{/login}" class="text-blue-600 font-medium hover:underline">
+                Login
+            </a>
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

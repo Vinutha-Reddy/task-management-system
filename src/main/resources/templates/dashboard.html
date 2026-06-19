@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+<div class="bg-white p-6 rounded shadow-md max-w-7xl mx-auto">
+
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+        Dashboard
+    </h1>
+
+    <!-- Expired Task Message -->
+    <div th:if="${expiredTaskMessage}"
+         class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded mb-6 shadow">
+
+        <p th:text="${expiredTaskMessage}"></p>
+
+        <div class="mt-2 flex items-center space-x-4">
+
+            <form method="get" th:action="@{/tasks/new}">
+                <input type="hidden" name="title" th:value="${deletedTaskTitle}" />
+                <input type="hidden" name="description" th:value="${deletedTaskDescription}" />
+                <input type="hidden" name="priority" th:value="${deletedTaskPriority}" />
+
+                <button type="submit"
+                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Yes
+                </button>
+            </form>
+
+            <a href="#"
+               onclick="this.closest('div').style.display='none'"
+               class="text-sm text-gray-600 hover:underline">
+                No
+            </a>
+
+        </div>
+    </div>
+
+    <!-- User Info -->
+
+    <div class="flex justify-between items-center mb-6">
+
+        <div>
+
+            <h2 class="text-xl font-semibold text-gray-800">
+                👋 Hi,
+                <span th:text="${userName}">
+                    User
+                </span>
+            </h2>
+
+            <p class="text-gray-600 mt-1">
+                Role :
+                <span class="font-medium"
+                      th:text="${userRole}">
+                    Employee
+                </span>
+            </p>
+
+        </div>
+
+        <div class="flex gap-3">
+
+    <a href="/tasks/new"
+       class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        + Add Task
+    </a>
+
+    <a href="/logout"
+       class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Logout
+    </a>
+
+</div>
+
+    </div>
+
+    <!-- ALL TASKS -->
+
+    <h2 class="text-2xl font-bold text-green-600 mb-4">
+        All Tasks
+    </h2>
+
+    <table class="table-auto w-full text-left border border-collapse border-gray-300">
+
+        <thead class="bg-blue-100">
+
+        <tr>
+
+            <th class="px-4 py-2 border">Title</th>
+            <th class="px-4 py-2 border">Description</th>
+            <th class="px-4 py-2 border">Created By</th>
+            <th class="px-4 py-2 border">Assigned To</th>
+            <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Priority</th>
+            <th class="px-4 py-2 border">Due Date</th>
+            <th class="px-4 py-2 border">Actions</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr th:if="${#lists.isEmpty(tasks)}">
+
+            <td colspan="8"
+                class="text-center py-4 text-gray-500">
+
+                No tasks available.
+
+            </td>
+
+        </tr>
+
+        <tr th:each="task : ${tasks}"
+            class="hover:bg-gray-100">
+
+            <td class="px-4 py-2 border"
+                th:text="${task.title}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.description}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.createdBy != null ? task.createdBy.name : 'N/A'}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.assignedTo != null ? task.assignedTo.name : 'N/A'}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.status}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.priority}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.dueDate}">
+            </td>
+
+            <td class="px-4 py-2 border space-x-2">
+
+    <a th:href="@{'/tasks/' + ${task.id}}"
+   class="text-blue-600 hover:underline">
+    View
+</a>
+
+    <a th:href="@{'/tasks/edit/' + ${task.id}}"
+       class="text-yellow-600 hover:underline">
+        Update
+    </a>
+
+    <form th:action="@{'/tasks/delete/' + ${task.id}}"
+          method="post"
+          style="display:inline;">
+        <button type="submit"
+                class="text-red-600 hover:underline bg-transparent border-none">
+            Delete
+        </button>
+    </form>
+
+</td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <hr class="my-10">
+
+    <!-- COMPLETED TASKS -->
+
+    <h2 class="text-2xl font-bold text-green-600 mb-4">
+        Completed Tasks
+    </h2>
+
+    <table class="table-auto w-full text-left border border-collapse border-gray-300">
+
+        <thead class="bg-blue-100">
+
+        <tr>
+
+            <th class="px-4 py-2 border">Title</th>
+            <th class="px-4 py-2 border">Description</th>
+            <th class="px-4 py-2 border">Created By</th>
+            <th class="px-4 py-2 border">Completed By</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr th:if="${#lists.isEmpty(completedTasks)}">
+
+            <td colspan="4"
+                class="text-center py-4 text-gray-500">
+
+                No completed tasks available.
+
+            </td>
+
+        </tr>
+
+        <tr th:each="task : ${completedTasks}">
+
+            <td class="px-4 py-2 border"
+                th:text="${task.title}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.description}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.createdBy != null ? task.createdBy.name : 'N/A'}">
+            </td>
+
+            <td class="px-4 py-2 border"
+                th:text="${task.assignedTo != null ? task.assignedTo.name : 'N/A'}">
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
+        <h1 class="text-3xl font-bold text-blue-700 mb-4">Welcome to Task Management</h1>
+
+        <!-- Tasks List -->
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">All Tasks</h2>
+        <ul class="space-y-2 mb-6">
+            <li th:each="task : ${tasks}" class="border-b pb-2">
+                <p>
+                    <strong th:text="${task.title}" class="text-lg text-blue-600">Task Title</strong><br>
+                    <span class="text-gray-600" th:text="${task.description}">Description</span><br>
+                    <span class="text-sm text-gray-500">
+                        Due: <span th:text="${task.dueDate}">2025-01-01</span> |
+                        Status: <span th:text="${task.status}">To Do</span> |
+                        Priority: <span th:text="${task.priority}">High</span>
+                    </span>
+                </p>
+            </li>
+        </ul>
+
+        <!-- Add Task Form -->
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">Add Task</h2>
+        <form th:action="@{/add}" method="post" class="grid grid-cols-1 gap-4">
+            <input type="text" name="title" placeholder="Title" required class="p-2 border rounded" />
+            <input type="text" name="description" placeholder="Description" required class="p-2 border rounded" />
+            <input type="date" name="dueDate" required class="p-2 border rounded" />
+            <input type="text" name="status" placeholder="Status (To Do/In Progress/Done)" required class="p-2 border rounded" />
+            <input type="text" name="priority" placeholder="Priority (Low/Medium/High)" required class="p-2 border rounded" />
+
+            <!-- If you want to use role-based assignment, replace this block -->
+            <select name="assignedToId" required class="p-2 border rounded">
+                <option disabled selected>Select User</option>
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">User</option>
+            </select>
+
+            <select name="projectId" required class="p-2 border rounded">
+                <option disabled selected>Select Project</option>
+                <option th:each="project : ${projects}" th:value="${project.id}" th:text="${project.name}">Project</option>
+            </select>
+
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Add Task
+            </button>
+        </form>
+    </div>
+</body>
+</html>

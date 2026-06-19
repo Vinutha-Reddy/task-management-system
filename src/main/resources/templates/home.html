@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - Task Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-blue-200 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-10 rounded-2xl shadow-lg max-w-md text-center">
+        <h2 class="text-3xl font-bold text-blue-700 mb-4">Welcome to the Task Management System</h2>
+        <p class="text-gray-600 mb-6">Manage tasks efficiently with role-based access.</p>
+        <a th:href="@{/login}" 
+           class="inline-block bg-blue-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-blue-700 transition">
+            Login
+        </a>
+    </div>
+</body>
+</html>

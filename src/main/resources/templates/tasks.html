@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}" lang="en">
+<head>
+    <title>Task List</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- Expired Task Messages -->
+        <div th:if="${expiredTaskMessages != null}" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded mb-4 shadow">
+            <ul>
+                <li th:each="msg : ${expiredTaskMessages}" th:text="${msg}"></li>
+            </ul>
+            <div class="mt-2 flex items-center space-x-4">
+                <form method="get" th:action="@{/tasks/new}">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Yes</button>
+                </form>
+                <a href="#" onclick="this.closest('div').style.display='none'" class="text-sm text-gray-600 hover:underline">No</a>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded mb-4 shadow">
+            <p th:text="${error}"></p>
+        </div>
+
+        <h1 class="text-3xl font-bold text-blue-600 mb-6">Task List</h1>
+
+        <ul class="space-y-6">
+            <li th:each="task : ${tasks}" class="bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-2">
+                    <h2 class="text-xl font-semibold text-gray-800" th:text="${task.title}">Task Title</h2>
+                    <p class="text-gray-600" th:text="${task.description}">Task Description</p>
+                </div>
+                <div class="text-sm text-gray-700">
+                    Due: <span th:text="${task.dueDate}">2025-01-01</span> |
+                    Status: <span th:text="${task.status}">To Do</span> |
+                    Priority: <span th:text="${task.priority}">Low</span> |
+                    Assigned to: <span th:text="${task.assignedTo.name}">User</span> |
+                    Project: <span th:text="${task.project != null ? task.project.name : 'None'}">Project</span>
+                </div>
+
+                <!-- Update Status Form -->
+                <form method="post" th:action="@{/tasks/update-status}" class="mt-4 flex items-center space-x-2">
+                    <input type="hidden" name="taskId" th:value="${task.id}" />
+                    <select name="status" class="border rounded p-1 text-sm">
+                        <option th:selected="${task.status == 'To Do'}">To Do</option>
+                        <option th:selected="${task.status == 'In Progress'}">In Progress</option>
+                        <option th:selected="${task.status == 'Done'}">Done</option>
+                    </select>
+                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm">Update</button>
+                </form>
+
+                <!-- Comments -->
+                <div class="mt-4">
+                    <strong class="text-gray-800">Comments:</strong>
+                    <ul class="pl-4 list-disc text-gray-700 space-y-1">
+                        <li th:each="comment : ${task.comments}">
+                            <span th:text="${comment.content}">Comment</span>
+                            <small class="text-xs text-gray-500">
+                                - <span th:text="${comment.author.name}">Author</span>,
+                                <span th:text="${#temporals.format(comment.timestamp, 'yyyy-MM-dd HH:mm')}">Time</span>
+                            </small>
+                        </li>
+                    </ul>
+
+                    <!-- Add Comment Form -->
+                    <form method="post" th:action="@{/tasks/add-comment}" class="mt-2 flex space-x-2">
+                        <input type="hidden" name="taskId" th:value="${task.id}" />
+                        <input type="text" name="content" placeholder="Add comment" required
+                               class="flex-grow border border-gray-300 p-2 rounded-md text-sm" />
+                        <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm">Post</button>
+                    </form>
+                </div>
+
+                <!-- Update and Delete Buttons -->
+                <div class="mt-4 flex gap-4">
+                    <a th:href="@{'/tasks/edit/' + ${task.id}}" class="text-blue-600 hover:underline text-sm">Update</a>
+                    <form th:action="@{'/tasks/delete/' + ${task.id}}" method="post"
+                          onsubmit="return confirm('Are you sure you want to delete this task?');"
+                          style="display:inline;">
+                        <button type="submit" class="text-red-600 hover:underline text-sm">Delete</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        <hr class="my-10" />
+
+        <!-- Add Task Form -->
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add New Task</h2>
+        <form method="post" th:action="@{/tasks/add}" class="space-y-4 bg-white p-6 rounded-lg shadow-md">
+            <div>
+                <label for="title" class="block font-medium text-sm text-gray-700">Title</label>
+                <input type="text" id="title" name="title" required
+                       class="w-full border border-gray-300 p-2 rounded-md text-sm" />
+            </div>
+
+            <div>
+                <label for="description" class="block font-medium text-sm text-gray-700">Description</label>
+                <input type="text" id="description" name="description" required
+                       class="w-full border border-gray-300 p-2 rounded-md text-sm" />
+            </div>
+
+            <div>
+                <label for="dueDate" class="block font-medium text-sm text-gray-700">Due Date</label>
+                <input type="date" id="dueDate" name="dueDate" required
+                       class="w-full border border-gray-300 p-2 rounded-md text-sm" />
+            </div>
+
+            <div>
+                <label for="status" class="block font-medium text-sm text-gray-700">Select Status</label>
+                <select id="status" name="status" class="w-full border border-gray-300 p-2 rounded-md text-sm">
+                    <option>To Do</option>
+                    <option>In Progress</option>
+                    <option>Done</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="priority" class="block font-medium text-sm text-gray-700">Select Priority</label>
+                <select id="priority" name="priority" class="w-full border border-gray-300 p-2 rounded-md text-sm">
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="role" class="block font-medium text-sm text-gray-700">Select Role</label>
+                <select name="role" id="role" required class="w-full border border-gray-300 p-2 rounded-md text-sm">
+                    <option value="ADMIN">Admin</option>
+                    <option value="USER">User</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                    Add Task
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

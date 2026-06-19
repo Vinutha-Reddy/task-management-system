@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Task</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <h1 class="text-2xl font-bold text-blue-600 mb-6 text-center">Add Task</h1>
+    <form th:action="@{/tasks/add}" method="post" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Title</label>
+            <input type="text" name="title" required
+                   th:value="${deletedTaskTitle}" class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Description</label>
+            <input type="text" name="description" required
+                   th:value="${deletedTaskDescription}" class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Due Date</label>
+            <input type="date" name="dueDate" required
+                   class="w-full border border-gray-300 p-2 rounded text-sm">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Status</label>
+            <select name="status" class="w-full border border-gray-300 p-2 rounded text-sm">
+                <option>To Do</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+            </select>
+        </div>
+        
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Priority</label>
+            <select name="priority" class="w-full border border-gray-300 p-2 rounded text-sm">
+                <option th:selected="${deletedTaskPriority == 'Low'}">Low</option>
+                <option th:selected="${deletedTaskPriority == 'Medium'}">Medium</option>
+                <option th:selected="${deletedTaskPriority == 'High'}">High</option>
+            </select>
+        </div>
+        <div th:if="${userRole == 'MANAGER'}">
+    <label class="block text-sm font-medium text-gray-700">
+        Assign To Employee
+    </label>
+
+    <select name="assignedUserId"
+            class="w-full border border-gray-300 p-2 rounded text-sm">
+
+        <option value="">Select Employee</option>
+
+        <option th:each="employee : ${employees}"
+                th:value="${employee.id}"
+                th:text="${employee.name}">
+        </option>
+
+    </select>
+</div>
+
+        <div>
+            <button type="submit"
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Add Task
+            </button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
