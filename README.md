@@ -24,7 +24,7 @@ The application follows a layered architecture pattern that separates presentati
 4. Services implement business logic and validations.
 5. Repositories communicate with the MySQL database using Spring Data JPA.
 6. Spring Security handles authentication and authorization.
-7. Spring Scheduler monitors task deadlines.
+7. Spring Scheduler performs daily task monitoring and automated task management.
 8. Email services send reminder and password reset notifications.
 
 ---
@@ -44,12 +44,15 @@ The application follows a layered architecture pattern that separates presentati
 ![Login](screenshots/login-page.png)
 
 ### Forgot Password
+
 ![Forgot Password](screenshots/forgot-password.png)
 
 ### Password Reset Email
+
 ![Password Reset Email](screenshots/reset-password-email.png)
 
 ### Reset Password
+
 ![Reset Password](screenshots/reset-password.png)
 
 ### Employee Dashboard
@@ -116,9 +119,10 @@ The application follows a layered architecture pattern that separates presentati
 ### Notifications
 
 * Email Reminder Notifications
-* Scheduled Task Monitoring
-* Deadline Alerts
-* Automated Reminder Service
+* Send Due-Date Reminder Emails
+* Send Overdue Notifications
+* Delete Overdue Tasks
+* Run Daily Task Monitoring
 
 ### Security & Access Control
 
@@ -180,6 +184,17 @@ src/
 
 ---
 
+## Database Schema
+
+### Tables
+
+* User
+* Task
+* Comment
+* PasswordResetToken
+
+---
+
 ## Prerequisites
 
 Before running the application, ensure the following software is installed:
@@ -199,26 +214,43 @@ Create a MySQL database:
 CREATE DATABASE task_management_system;
 ```
 
-Configure the database connection inside `application.properties`:
+The application uses environment variables for database credentials.
+
+Configure the following variables before running the application:
+
+```text
+DB_USERNAME=your_mysql_username
+DB_PASSWORD=your_mysql_password
+```
+
+The application reads these values from:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/task_management_system
-spring.datasource.username=YOUR_USERNAME
-spring.datasource.password=YOUR_PASSWORD
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
 ```
 
 ---
 
 ## Email Configuration
 
-Configure SMTP settings inside `application.properties`:
+The application uses Gmail SMTP for sending password reset and reminder emails.
 
-```properties
-spring.mail.username=YOUR_EMAIL
-spring.mail.password=YOUR_APP_PASSWORD
+Configure the following environment variables:
+
+```text
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_gmail_app_password
 ```
 
-Use an App Password when using Gmail SMTP.
+The application reads these values from:
+
+```properties
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+```
+
+When using Gmail SMTP, generate and use a Google App Password instead of your account password.
 
 ---
 
@@ -229,6 +261,26 @@ Use an App Password when using Gmail SMTP.
 ```bash
 git clone <repository-url>
 cd task-management-system
+```
+
+### Configure Environment Variables
+
+#### Windows (Command Prompt)
+
+```cmd
+set DB_USERNAME=your_mysql_username
+set DB_PASSWORD=your_mysql_password
+set MAIL_USERNAME=your_email@gmail.com
+set MAIL_PASSWORD=your_gmail_app_password
+```
+
+#### Windows (PowerShell)
+
+```powershell
+$env:DB_USERNAME="your_mysql_username"
+$env:DB_PASSWORD="your_mysql_password"
+$env:MAIL_USERNAME="your_email@gmail.com"
+$env:MAIL_PASSWORD="your_gmail_app_password"
 ```
 
 ### Build Project
@@ -301,7 +353,12 @@ Each task supports comments and discussions. Every comment records:
 
 ### Email Notifications
 
-The system automatically monitors tasks and sends reminder emails before approaching deadlines.
+The system automatically monitors tasks and:
+
+* Sends due-date reminder emails
+* Sends overdue task notifications
+* Deletes overdue tasks automatically
+* Runs scheduled daily task monitoring
 
 ### Completed Task Management
 
